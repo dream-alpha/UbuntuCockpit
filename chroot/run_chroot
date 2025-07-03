@@ -1,0 +1,3 @@
+#!/bin/bash
+echo entering chroot
+chroot /data/ubuntu /bin/bash
