@@ -1,0 +1,19 @@
+#!/bin/sh
+plugin_dir=/usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit
+cp $plugin_dir/chroot/*_chroot /data/ubuntu/root/.
+chmod +x /data/ubuntu/root/mount_chroot
+chmod +x /data/ubuntu/root/unmount_chroot
+chmod +x /data/ubuntu/root/run_chroot
+chmod +x /data/ubuntu/root/enter_chroot
+chmod +x /data/ubuntu/root/exit_chroot
+
+echo "***********************************"
+echo "*          UbuntuCockpit          *"
+echo "*               by                *"
+echo "*          dream-alpha            *"
+echo "***********************************"
+echo ""
+echo "Plugin UbuntuCockpit installed successfully."
+echo "Please restart DreamOS now!"
+echo ""
+exit 0

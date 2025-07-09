@@ -1,0 +1,4 @@
+#!/bin/bash
+echo exiting  chroot
+exit
+$HOME/unmount_chroot

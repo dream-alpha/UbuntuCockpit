@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "$1" = "remove" ]; then
+	rm -rf /usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit > /dev/null 2>&1
+	echo "UbuntuCockpit plugin removed successfully."
+else
+	find /usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit -type f -name "*.pyo" -exec rm -f {} \; > /dev/null 2>&1
+fi
+exit 0
