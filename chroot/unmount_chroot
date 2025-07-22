@@ -1,0 +1,11 @@
+#!/bin/bash
+CHROOT=/data/ubuntu
+
+# Clean exit
+umount "$CHROOT/dev/pts"
+umount "$CHROOT/dev"
+umount "$CHROOT/proc"
+umount "$CHROOT/sys"
+umount "$CHROOT/run"
+
+echo "[✓] Chroot mounts unmounted."

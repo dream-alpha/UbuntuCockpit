@@ -1,0 +1,49 @@
+#!/bin/sh
+
+model=$(cat /proc/stb/info/model)
+echo $model
+if [ $model = "one" ] || [ $model = "two" ]; then
+	echo "ONE or TWO"
+	arch="arm64"
+else
+	echo "DM9xx"
+	arch="armhf"
+fi
+
+base_dir=/data
+if [ -d $base_dir ]; then
+	# create subsystem dir
+	ubuntu=$base_dir/ubuntu
+	if [ -d $ubuntu ]; then
+		read -p "Ubuntu installation already exists, do you want to reinstall (y/N): " yn
+		if [[ "$yn" == "y" || "$yn" == "Y" ]]; then
+			echo "Reinstalling Ubuntu..."
+			# Unmount all mount points under $ubuntu
+			mountpoints=$(mount | grep "$ubuntu" | awk '{print $3}' | sort -r)
+			for mnt in $mountpoints; do
+				umount "$mnt"
+			done
+			rm -rf $ubuntu
+		else
+			echo "Installation aborted."
+			exit
+		fi
+	fi
+
+	# download Ubuntu package
+	mkdir $ubuntu
+	cd $ubuntu
+	url=https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/ubuntu-base-24.04.2-base-$arch.tar.gz
+	curl -O $url
+	tar -xzvf ubuntu-base-24.04.2-base-$arch.tar.gz
+	rm ubuntu-base-24.04.2-base-$arch.tar.gz
+
+	echo ""
+	echo "Ubuntu subsystem installed successfully in $ubuntu."
+	echo ""
+else
+	echo ""
+	echo "Base dir $ubuntu for Ubuntu subsystem does not exist."
+	echo ""
+fi
+exit 0

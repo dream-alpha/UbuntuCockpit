@@ -1,0 +1,63 @@
+#!/bin/bash
+set -e
+
+CHROOT_DIR=/data/ubuntu
+VENV_DIR=/root/venv
+PLUGIN_DIR=/usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit
+
+cp $PLUGIN_DIR/chroot/*_chroot $CHROOT_DIR/root/.
+chmod +x /data/ubuntu/root/*_chroot
+
+$CHROOT_DIR/root/mount_chroot
+
+echo "[*] Entering chroot and setting up Python..."
+chroot "$CHROOT_DIR" /bin/bash -c "
+  set -e
+  echo '[*] Updating package lists...'
+  DEBIAN_FRONTEND=noninteractive apt update
+  echo '[*] Upgrading base system...'
+  DEBIAN_FRONTEND=noninteractive apt upgrade -y
+
+  echo '[*] Enabling universe repo if needed...'
+  DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common
+  add-apt-repository -y universe
+  DEBIAN_FRONTEND=noninteractive apt update
+
+  echo '[*] Installing Python, venv, pip, and build dependencies...'
+  DEBIAN_FRONTEND=noninteractive apt install -y \
+    python3 \
+    python3-venv \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    zlib1g-dev \
+    git curl wget nano
+
+  echo '[*] Creating virtualenv at $VENV_DIR ...'
+  python3 -m venv $VENV_DIR
+
+  echo '[*] Activating venv and upgrading pip tooling...'
+  source $VENV_DIR/bin/activate
+  pip install --upgrade pip setuptools wheel
+"
+
+echo "[*] Unmounting chroot filesystems..."
+$CHROOT_DIR/root/unmount_chroot
+
+# Create plugins directory if it doesn't exist
+mkdir -p $CHROOT_DIR/root/plugins
+
+echo "[✓] Python venv installed in $CHROOT_DIR$VENV_DIR"
+
+echo "***********************************"
+echo "*          UbuntuCockpit          *"
+echo "*               by                *"
+echo "*          dream-alpha            *"
+echo "***********************************"
+echo ""
+echo "Plugin UbuntuCockpit installed successfully."
+echo "Please restart DreamOS now!"
+echo ""
+exit 0
