@@ -47,7 +47,7 @@ chroot "$CHROOT_DIR" /bin/bash -c "
 "
 
 echo "[*] Unmounting chroot filesystems..."
-$CHROOT_DIR/root/unmount_chroot
+$CHROOT_DIR/root/umount_chroot
 
 # Create plugins directory if it doesn't exist
 mkdir -p $CHROOT_DIR/root/plugins

@@ -33,10 +33,10 @@ if [ -d $base_dir ]; then
 	# download Ubuntu package
 	mkdir $ubuntu
 	cd $ubuntu
-	url=https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/ubuntu-base-24.04.2-base-$arch.tar.gz
+	url=https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/ubuntu-base-24.04.3-base-$arch.tar.gz
 	curl -O $url
-	tar -xzvf ubuntu-base-24.04.2-base-$arch.tar.gz
-	rm ubuntu-base-24.04.2-base-$arch.tar.gz
+	tar -xzvf ubuntu-base-24.04.3-base-$arch.tar.gz
+	rm ubuntu-base-24.04.3-base-$arch.tar.gz
 
 	echo ""
 	echo "Ubuntu subsystem installed successfully in $ubuntu."
