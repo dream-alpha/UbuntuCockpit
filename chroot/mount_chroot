@@ -1,0 +1,12 @@
+#!/bin/bash
+echo mounting chroot device
+
+CHROOT=/data/ubuntu
+
+mount --bind /dev "$CHROOT/dev"
+mount --bind /dev/pts "$CHROOT/dev/pts"
+mount --bind /proc "$CHROOT/proc"
+mount --bind /sys "$CHROOT/sys"
+mount --bind /run "$CHROOT/run"
+
+cp /etc/resolv.conf /data/ubuntu/etc/resolv.conf

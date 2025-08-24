@@ -1,0 +1,4 @@
+#!/bin/bash
+echo entering chroot
+$HOME/mount_chroot
+$HOME/run_chroot
