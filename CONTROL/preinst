@@ -3,10 +3,8 @@
 model=$(cat /proc/stb/info/model)
 echo $model
 if [ $model = "one" ] || [ $model = "two" ]; then
-	echo "ONE or TWO"
 	arch="arm64"
 else
-	echo "DM9xx"
 	arch="armhf"
 fi
 

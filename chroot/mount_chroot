@@ -9,4 +9,6 @@ mount --bind /proc "$CHROOT/proc"
 mount --bind /sys "$CHROOT/sys"
 mount --bind /run "$CHROOT/run"
 
+mount -t devpts devpts /data/ubuntu/dev/pts
+
 cp /etc/resolv.conf /data/ubuntu/etc/resolv.conf
