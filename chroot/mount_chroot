@@ -1,0 +1,20 @@
+#!/bin/bash
+echo mounting chroot device
+
+CHROOT=/data/ubuntu
+
+mount --bind /dev "$CHROOT/dev"
+mount --bind /proc "$CHROOT/proc"
+mount --bind /sys "$CHROOT/sys"
+mount --bind /run "$CHROOT/run"
+if [ ! -d "$CHROOT/etc/enigma2" ]; then
+	mkdir "$CHROOT/etc/enigma2"
+fi
+mount --bind /etc/enigma2 "$CHROOT/etc/enigma2"
+
+if [ ! -d "$CHROOT/dev/pts" ]; then
+	mkdir "$CHROOT/dev/pts"
+fi
+mount -t devpts devpts /data/ubuntu/dev/pts
+
+cp /etc/resolv.conf /data/ubuntu/etc/resolv.conf

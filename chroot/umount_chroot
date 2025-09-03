@@ -1,0 +1,12 @@
+#!/bin/bash
+CHROOT=/data/ubuntu
+
+# Clean exit
+umount -f "$CHROOT/dev/pts"
+umount -f "$CHROOT/dev"
+umount -f "$CHROOT/proc"
+umount -f "$CHROOT/sys"
+umount -f "$CHROOT/run"
+if [ -d "$CHROOT/etc/enigma2" ]; then
+	umount -f "$CHROOT/etc/enigma2"
+fi

@@ -1,0 +1,5 @@
+Description: UbuntuCockpit
+Maintainer: dream-alpha
+Package: enigma2-plugin-systemplugins-ubuntucockpit
+Version: 0.4.16
+Architecture: all

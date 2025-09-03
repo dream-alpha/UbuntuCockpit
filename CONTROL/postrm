@@ -1,0 +1,16 @@
+#!/bin/sh
+ubuntu=/data/ubuntu
+if [ "$1" = "remove" ]; then
+	# Unmount all mount points under $ubuntu
+	mountpoints=$(mount | grep "$ubuntu" | awk '{print $3}' | sort -r)
+	for mnt in $mountpoints; do
+		umount "$mnt"
+	done
+	rm -rf $ubuntu
+
+	rm -rf /usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit > /dev/null 2>&1
+	echo "UbuntuCockpit plugin removed successfully."
+else
+	find /usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit -type f -name "*.pyo" -exec rm -f {} \; > /dev/null 2>&1
+fi
+exit 0

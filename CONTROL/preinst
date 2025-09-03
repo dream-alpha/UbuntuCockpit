@@ -1,0 +1,47 @@
+#!/bin/sh
+
+model=$(cat /proc/stb/info/model)
+echo model: $model
+if [ $model = "one" ] || [ $model = "two" ]; then
+	arch="arm64"
+else
+	arch="armhf"
+fi
+
+base_dir=/data
+if [ -d $base_dir ]; then
+	ubuntu=$base_dir/ubuntu
+	# Remove existing Ubuntu installation
+
+	# Unmount all mount points under $ubuntu
+	mountpoints=$(mount | grep "$ubuntu" | awk '{print $3}' | sort -r)
+	for mnt in $mountpoints; do
+		umount "$mnt" || umount -l "$mnt"
+	done
+
+	# Double-check nothing is mounted
+	if mount | grep -q "$ubuntu"; then
+		echo "Some mount points under $ubuntu could not be unmounted."
+		mount | grep "$ubuntu"
+	fi
+
+	rm -rf $ubuntu
+
+    # Download and install Ubuntu
+	mkdir $ubuntu
+	cd $ubuntu
+	url=https://github.com/dream-alpha/UbuntuCockpit/releases/download/24.04.2/ubuntu-base-24.04.2-base-$arch.tar.gz
+	# url=https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/ubuntu-base-24.04.2-base-$arch.tar.gz
+	wget $url -O ubuntu-base-24.04.2-base-$arch.tar.gz
+	tar -xzvf ubuntu-base-24.04.2-base-$arch.tar.gz
+	rm ubuntu-base-24.04.2-base-$arch.tar.gz
+
+	echo ""
+	echo "Ubuntu subsystem successfully installed in $ubuntu."
+	echo ""
+else
+	echo ""
+	echo "Base dir $base_dir for Ubuntu subsystem does not exist."
+	echo ""
+fi
+exit 0
