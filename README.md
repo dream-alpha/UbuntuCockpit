@@ -20,7 +20,7 @@ To leave the ubuntu subsystem:
 - cd /data/ubuntu/root
 - ./umount_chroot (this is required for the DreamOs subsystem to shutdown without hang)
 
-## Usage as subsystem for enigma2_plugin_ubuntu_xxxx plugins
+## Usage as subsystem for enigma2 python3 plugins
 For this use case no manual actions are required. The python2 plugin activates chroot and runs the python3 plugin part.
 
 ## Limitations

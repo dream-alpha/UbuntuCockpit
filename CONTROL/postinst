@@ -9,13 +9,48 @@ PLUGIN_DIR=/usr/lib/enigma2/python/Plugins/SystemPlugins/UbuntuCockpit
 cp $PLUGIN_DIR/chroot/*_chroot $CHROOT_DIR/root/.
 chmod +x /data/ubuntu/root/*_chroot
 
-# Disable systemd
-echo -e "#!/bin/sh\nexit 0" > $CHROOT/var/lib/dpkg/info/systemd.postinst
-chmod +x $CHROOT/var/lib/dpkg/info/systemd.postinst
+# Ensure chroot directories exist and have proper permissions
+mkdir -p $CHROOT_DIR/var/lib/dpkg/info
+mkdir -p $CHROOT_DIR/var/log/journal
+mkdir -p $CHROOT_DIR/run/systemd
+mkdir -p $CHROOT_DIR/etc/systemd/system
+
+# Disable systemd and related packages maintainer scripts BEFORE chroot and package config
+# Create systemd dummy scripts to prevent configuration issues in chroot
+for script in postinst prerm postrm preinst; do
+    echo -e '#!/bin/sh\nexit 0' > $CHROOT_DIR/var/lib/dpkg/info/systemd.$script
+    chmod +x $CHROOT_DIR/var/lib/dpkg/info/systemd.$script
+done
+
+# Also disable other systemd-related packages that might cause issues
+for pkg in systemd-dev systemd-timesyncd systemd-resolved systemd-networkd; do
+    for script in postinst prerm postrm preinst; do
+        if [ -f $CHROOT_DIR/var/lib/dpkg/info/$pkg.$script ]; then
+            echo -e '#!/bin/sh\nexit 0' > $CHROOT_DIR/var/lib/dpkg/info/$pkg.$script
+            chmod +x $CHROOT_DIR/var/lib/dpkg/info/$pkg.$script
+        fi
+    done
+done
+
+# Prevent passwd lock issues in chroot by ensuring proper file permissions
+chmod 644 $CHROOT_DIR/etc/passwd 2>/dev/null || true
+chmod 644 $CHROOT_DIR/etc/group 2>/dev/null || true
+chmod 640 $CHROOT_DIR/etc/shadow 2>/dev/null || true
+chmod 640 $CHROOT_DIR/etc/gshadow 2>/dev/null || true
+
+# Create systemd policy-rc.d to prevent service starts in chroot
+cat > $CHROOT_DIR/usr/sbin/policy-rc.d << 'EOF'
+#!/bin/sh
+exit 101
+EOF
+chmod +x $CHROOT_DIR/usr/sbin/policy-rc.d
 
 $CHROOT_DIR/root/mount_chroot
 
 echo "[*] Entering chroot and setting up Python..."
+# Set environment variables to prevent systemd issues in chroot
+export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
 chroot "$CHROOT_DIR" /bin/bash -c "
   set -e
   echo '[*] Updating package lists...'
